@@ -48,9 +48,29 @@ const createArticle = async (ctx: RouterContext, next: any) => {
 }
 const updateArticle = async (ctx: RouterContext, next: any) => {
   //TODO: edit an article
+  // Corrected code snippet
+  let { title, fullText } = ctx.request.body as { title: string, fullText: string };
+  let newArticle = { title: title, fullText: fullText };
+  let id = +ctx.params.id
+  if ((id < articles.length + 1) && (id > 0)) {
+    articles[id - 1] = newArticle;
+    ctx.body = articles[id - 1];
+    ctx.status = 200;
+  } else {
+    ctx.status = 404;
+  }
+  await next();
 }
 const deleteArticle = async (ctx: RouterContext, next: any) => {
   //TODO: delete an article
+  let id = +ctx.params.id
+  if ((id < articles.length + 1) && (id > 0)) {
+    articles.splice(id - 1, 1);
+    ctx.body = articles;
+  } else {
+    ctx.status = 404;
+  }
+  await next();
 }
 /* Routes are needed to connect path endpoints to handler functions.
 When an Article id needs to be matched we use a pattern to match
@@ -59,7 +79,7 @@ and we will define the pattern to match at least 1 numeral. */
 router.get('/', getAll);
 router.post('/', bodyParser(), createArticle);
 router.get('/:id([0-9]{1,})', getById);
-router.put('/:id([0-9]{1,})', updateArticle);
+router.put('/:id([0-9]{1,})', bodyParser(), updateArticle);
 router.del('/:id([0-9]{1,})', deleteArticle);
 // Finally, define the exported object when import from other scripts.
 export { router };
