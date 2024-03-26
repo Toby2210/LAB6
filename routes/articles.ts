@@ -62,6 +62,8 @@ const updateArticle = async (ctx: RouterContext, next: any) => {
     ctx.status = 404;
   }
   await next();
+
+
 }
 const deleteArticle = async (ctx: RouterContext, next: any) => {
   //TODO: delete an article
